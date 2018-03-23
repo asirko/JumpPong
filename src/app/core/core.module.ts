@@ -6,7 +6,7 @@ import { LayoutComponent } from './layout/layout.component';
 
 @NgModule({
   imports: [
-    SharedModule,
+    SharedModule.forRoot(),
     CoreRoutingModule
   ],
   exports: [

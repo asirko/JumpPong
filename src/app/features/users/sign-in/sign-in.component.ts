@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'jp-sign-in',
@@ -7,9 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SignInComponent implements OnInit {
 
-  constructor() { }
+  signInForm: FormGroup;
+
+  constructor(private fb: FormBuilder,
+              private userService: UserService) { }
 
   ngOnInit() {
+    this.signInForm = this.fb.group({
+      login: '',
+      password: ''
+    });
+  }
+
+  validate({ value, valid }: { value: any, valid: boolean }): void {
+    this.userService
+      .signIn$(value.login, value.password)
+      .subscribe();
   }
 
 }

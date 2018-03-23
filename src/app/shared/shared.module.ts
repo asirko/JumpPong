@@ -1,13 +1,29 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../features/users/user.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   exports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   declarations: []
 })
-export class SharedModule { }
+export class SharedModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SharedModule,
+      providers: [
+        UserService
+      ]
+    };
+  }
+}
