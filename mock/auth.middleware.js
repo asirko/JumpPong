@@ -14,7 +14,7 @@ exports.test = (req, res, next) => {
 
   const simpleSend = res.send;
   res.send = function (json) {
-    if (isAuthorizationValid) {
+    if (isAuthorizationValid && res.statusCode < 400) {
       res.header('Authorization', `Bearer ${new Date().getTime()}`);
     }
 
@@ -40,8 +40,6 @@ function isWhiteList (req) {
   const whiteList = [
     'POST /users/login',
   ];
-
-  console.log(req.method, req.url);
 
   return whiteList.map(w => w.split(' '))
     .map(([method, url]) => req.method === method && req.url === url)

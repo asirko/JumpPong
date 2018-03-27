@@ -2,7 +2,8 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../features/users/user.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TokenInterceptorService } from './token-interceptor.service';
 
 @NgModule({
   imports: [
@@ -22,6 +23,11 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptorService,
+          multi: true
+        },
         UserService
       ]
     };

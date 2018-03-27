@@ -5,6 +5,7 @@ exports.getUser = function(req, res) {
   const user = userStorage.getUserByLogin(req.body.login, req.body.password);
 
   if (user) {
+    res.header('Authorization', `Bearer ${new Date().getTime()}`);
     res.json(user);
   } else {
     res.status(403)
