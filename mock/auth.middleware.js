@@ -2,11 +2,13 @@
 const TOKEN_VALIDITY_IN_MINUTES = 30;
 const BEARER = 'Bearer ';
 
-exports.test = (req, res, next) => {
+exports.getUserId = getUserId;
+exports.middleware = middleware;
+
+function middleware (req, res, next) {
 
   // make sure user is allowed to that route (white listed)
-  const authorization = req.header('authorization');
-  const isAuthorizationValid = authorizationIsValid(authorization);
+  const isAuthorizationValid = authorizationIsValid(req.header('authorization'));
   if (!isWhiteList(req) && !isAuthorizationValid) {
     res.status(401).send();
     return;
@@ -14,23 +16,34 @@ exports.test = (req, res, next) => {
 
   const simpleSend = res.send;
   res.send = function (json) {
-    if (isAuthorizationValid && res.statusCode < 400) {
-      res.header('Authorization', `Bearer ${new Date().getTime()}`);
+    if (authorizationIsValid(req.header('authorization') && res.statusCode < 400)) {
+      const userId = getUserId(req);
+      res.header('Authorization', `${BEARER}${userId}-${new Date().getTime()}`);
     }
 
     simpleSend.apply(res, [json]);
   };
   next();
-};
+}
 
 function authorizationIsValid(authorization) {
-  return authorization
-    && new RegExp(`^${BEARER} .+$`).test(authorization)
-    && tokenIsValid(authorization.replace(BEARER, ''));
+  console.log('authorizationIsValid', authorization);
+  return tokenIsValid(getToken(authorization));
+}
+
+function getToken(authorization) {
+  const strToken = authorization
+    && new RegExp(`^${BEARER}.+$`).test(authorization)
+    && authorization.replace(BEARER, '');
+  return /^\d+-\d+$/.test(strToken) ? strToken : null;
 }
 
 function tokenIsValid(token) {
-  const dateTime = +token;
+  console.log('tokenIsValid', token);
+  if (!token) {
+    return false;
+  }
+  const dateTime = +token.split('-')[1];
   const msNow = new Date().getTime();
   const msSinceToken = msNow - dateTime;
   return msSinceToken < TOKEN_VALIDITY_IN_MINUTES * 60 * 1000;
@@ -44,4 +57,11 @@ function isWhiteList (req) {
   return whiteList.map(w => w.split(' '))
     .map(([method, url]) => req.method === method && req.url === url)
     .reduce((hasOneTrue, currentBoolean) => hasOneTrue || currentBoolean, false);
+}
+
+
+function getUserId(req) {
+  const authorization = req.header('authorization');
+  const token = getToken(authorization);
+  return token ? token.split('-')[0] : null;
 }

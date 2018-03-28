@@ -1,11 +1,12 @@
 const userStorage = require('./user.mock');
+const auth = require('../../auth.middleware');
 
 exports.getUser = function(req, res) {
   console.log('get User: ', req.body.login);
-  const user = userStorage.getUserByLogin(req.body.login, req.body.password);
+  const user = userStorage.getUserByLoginAndPassword(req.body.login, req.body.password);
 
   if (user) {
-    res.header('Authorization', `Bearer ${new Date().getTime()}`);
+    res.header('Authorization', `Bearer ${user.id}-${new Date().getTime()}`);
     res.json(user);
   } else {
     res.status(403)
@@ -15,7 +16,7 @@ exports.getUser = function(req, res) {
 
 exports.createUser = function (req, res) {
   const user = req.body;
-  console.log(JSON.stringify(user));
+  console.log('Create User', JSON.stringify(user));
   if (userStorage.getUserByLogin(user.login)) {
     res.status(409).send();
     return;
@@ -32,10 +33,9 @@ exports.updateUser = function (req, res) {
 };
 
 exports.refreshUser = function(req, res) {
-  console.log(req.header('Authorization'));
-  const authorization = req.header('Authorization') || '';
-  const token = /^Bearer (.+)$/.exec(authorization)[1];
-  const user = userStorage.getUserByToken(token);
+  const userId = auth.getUserId(req);
+  const user = userStorage.getUserById(userId);
+  console.log('Refresh token for ', user);
 
   if (user) {
     res.json(user);
@@ -43,4 +43,10 @@ exports.refreshUser = function(req, res) {
     res.status(404)
       .send('Not found');
   }
+};
+
+exports.logout = function(req, res) {
+  console.log('Logout user: ', userStorage.getUserById(auth.getUserId(req)));
+  req.header('Authorization', null);
+  res.status(200).send();
 };

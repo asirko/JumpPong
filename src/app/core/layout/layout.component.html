@@ -1,5 +1,19 @@
-<p>
-  layout works!
-</p>
+<header>
+  <menu>
+    <a [routerLink]="['/users']">Mon profil</a>
+    <a [routerLink]="['/pong']">Jouer</a>
+    <a [routerLink]="['/scores']">Scores</a>
+  </menu>
+  <div class="sign-in" *ngIf="!user">
+    <a [routerLink]="['/users', 'sign-in']">
+      <i class="fa fa-sign-in"></i>
+      Se connecter
+    </a>
+  </div>
+  <div class="sign-out" *ngIf="user" (click)="logout()">
+    <i class="fa fa-sign-out"></i>
+    {{ user.login }}
+  </div>
+</header>
 
 <router-outlet></router-outlet>

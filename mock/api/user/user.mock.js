@@ -7,17 +7,21 @@ const users = [
   }
 ];
 
-exports.getUserByLogin = function (login, password) {
+exports.getUserById = function (id) {
+  return users.find(user => user.id === id);
+};
+
+exports.getUserByLogin = function (login) {
+  return users.find(user => user.login === login);
+};
+
+exports.getUserByLoginAndPassword = function (login, password) {
   const foundUser = users.find(user => user.login === login);
   if (foundUser && foundUser.password === password) {
     return cloneWithoutPassword(foundUser);
   } else {
     return null;
   }
-};
-
-exports.getUserByToken = function (token) {
-  return cloneWithoutPassword(users.find(user => user.token === token));
 };
 
 exports.updateUserById = function (id, user) {

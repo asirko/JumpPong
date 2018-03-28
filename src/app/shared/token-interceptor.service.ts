@@ -32,7 +32,7 @@ export class TokenInterceptorService implements HttpInterceptor {
   extractToken(event: HttpEvent<{ data: any, token: string }>): void {
     if (event instanceof HttpResponse) {
       const authorization = event.headers.get('Authorization');
-      const arr = authorization.match(/^Bearer (.*)$/);
+      const arr = authorization && authorization.match(/^Bearer (.*)$/);
       if (arr && arr.length >= 2) {
         localStorage.setItem(LOCAL_TOKEN, arr[1]);
       }
