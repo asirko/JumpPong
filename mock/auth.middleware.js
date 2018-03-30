@@ -27,7 +27,6 @@ function middleware (req, res, next) {
 }
 
 function authorizationIsValid(authorization) {
-  console.log('authorizationIsValid', authorization);
   return tokenIsValid(getToken(authorization));
 }
 
@@ -39,7 +38,6 @@ function getToken(authorization) {
 }
 
 function tokenIsValid(token) {
-  console.log('tokenIsValid', token);
   if (!token) {
     return false;
   }
@@ -51,7 +49,7 @@ function tokenIsValid(token) {
 
 function isWhiteList (req) {
   const whiteList = [
-    'POST /users/login',
+    'POST /users/login'
   ];
 
   return whiteList.map(w => w.split(' '))
@@ -63,5 +61,5 @@ function isWhiteList (req) {
 function getUserId(req) {
   const authorization = req.header('authorization');
   const token = getToken(authorization);
-  return token ? token.split('-')[0] : null;
+  return token ? +token.split('-')[0] : null;
 }

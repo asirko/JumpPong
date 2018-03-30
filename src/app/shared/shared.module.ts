@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../features/users/user.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptorService } from './token-interceptor.service';
+import { AuthGuard } from './auth.guard';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ export class SharedModule {
           useClass: TokenInterceptorService,
           multi: true
         },
-        UserService
+        UserService,
+        AuthGuard
       ]
     };
   }

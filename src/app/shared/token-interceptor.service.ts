@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
-const LOCAL_TOKEN = 'localToken';
+export const LOCAL_TOKEN = 'localToken';
 
 @Injectable()
 export class TokenInterceptorService implements HttpInterceptor {
@@ -24,9 +24,10 @@ export class TokenInterceptorService implements HttpInterceptor {
     }
 
     return next.handle(request).pipe(
+      tap(console.log),
       tap(event => this.extractToken(event)),
       catchError(err => this.handleErrors(err))
-    );
+    ).pipe(tap(console.log));
   }
 
   extractToken(event: HttpEvent<{ data: any, token: string }>): void {
@@ -39,9 +40,11 @@ export class TokenInterceptorService implements HttpInterceptor {
     }
   }
 
-  handleErrors(err: any) {
+  handleErrors(err: HttpErrorResponse) {
     if (err.status === 401) {
-      this.router.navigate(['/']);
+      console.log(err);
+      this.router.navigate(['/users', 'sign-in']);
+      console.log('ici');
       return of(null);
     }
     return ErrorObservable.create(err);

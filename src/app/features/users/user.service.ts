@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { filter, tap } from 'rxjs/operators';
+import { catchError, filter, share, tap } from 'rxjs/operators';
+import { LOCAL_TOKEN } from '../../shared/token-interceptor.service';
 
 export class User {
   login: string;
@@ -11,9 +12,17 @@ export class User {
 @Injectable()
 export class UserService {
 
-  user$ = new BehaviorSubject<User>(undefined);
+  private user$ = new BehaviorSubject<User>(undefined);
+  private refreshConnected$ = this.http.get<User>('/api/users/refreshConnected')
+    .pipe(
+      tap(() => console.log('retour http')),
+      share(),
+      tap(u => this.user$.next(u))
+    );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.refreshConnected$.subscribe();
+  }
 
   getUser$(): Observable<User> {
     return this.user$.asObservable().pipe(filter(u => u !== undefined));
@@ -27,7 +36,8 @@ export class UserService {
 
   logout(): Observable<any> {
     return this.http.get('/api/users/logout').pipe(
-      tap(() => this.user$.next(null))
+      tap(() => this.user$.next(null)),
+      tap(() => localStorage.removeItem(LOCAL_TOKEN))
     );
   }
 
