@@ -1,12 +1,15 @@
 <form (ngSubmit)="validate(signInForm)" [formGroup]="signInForm" novalidate>
-  <div>
+  <div class="form-control-text">
     <label for="login">Identifiant</label>
     <input id="login" type="text" formControlName="login">
   </div>
-  <div>
+  <div class="form-control-text">
     <label for="password">Mot de passe</label>
     <input id="password" type="password" formControlName="password">
   </div>
 
-  <button type="submit">Se connecter</button>
+  <div class="controls">
+    <button type="submit">Se connecter</button>
+    <a [routerLink]="['..', 'create-account']">Pas encore de compte&nbsp;?</a>
+  </div>
 </form>

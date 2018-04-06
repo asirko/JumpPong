@@ -22,9 +22,11 @@ export class SignInComponent implements OnInit {
   }
 
   validate({ value, valid }: { value: any, valid: boolean }): void {
-    this.userService
-      .signIn$(value.login, value.password)
-      .subscribe();
+    if (valid) {
+      this.userService
+        .signIn$(value.login, value.password)
+        .subscribe();
+    }
   }
 
 }

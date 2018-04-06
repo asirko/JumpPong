@@ -1,0 +1,35 @@
+@import "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background-color: $color-main;
+  box-shadow: 0 1px 3px 0 rgba($dark, 0.5);
+
+  * {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  menu > * {
+    padding: 0 10px;
+  }
+}
+
+section {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+footer {
+  padding: 10px 30px;
+  color: #ffffff;
+  background-color: $dark;
+}

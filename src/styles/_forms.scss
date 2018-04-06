@@ -1,0 +1,17 @@
+
+.form-control-text {
+  width: 280px;
+
+  input,
+  label {
+    display: block;
+    margin: 5px 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 20px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+  }
+}

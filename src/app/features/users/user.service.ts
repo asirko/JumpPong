@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { catchError, filter, share, tap } from 'rxjs/operators';
 import { LOCAL_TOKEN } from '../../shared/token-interceptor.service';
+import { Router } from '@angular/router';
 
 export class User {
   login: string;
@@ -15,12 +16,12 @@ export class UserService {
   private user$ = new BehaviorSubject<User>(undefined);
   private refreshConnected$ = this.http.get<User>('/api/users/refreshConnected')
     .pipe(
-      tap(() => console.log('retour http')),
       share(),
       tap(u => this.user$.next(u))
     );
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private router: Router) {
     this.refreshConnected$.subscribe();
   }
 
@@ -37,7 +38,8 @@ export class UserService {
   logout(): Observable<any> {
     return this.http.get('/api/users/logout').pipe(
       tap(() => this.user$.next(null)),
-      tap(() => localStorage.removeItem(LOCAL_TOKEN))
+      tap(() => localStorage.removeItem(LOCAL_TOKEN)),
+      tap(() => this.router.navigate(['/users', 'sign-in']))
     );
   }
 

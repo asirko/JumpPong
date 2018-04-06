@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivate {
       take(1),
       map(u => !!u),
       tap(canGo =>  {
-        console.log(canGo);
         if (!canGo) {
           this.router.navigate(['/users', 'sign-in']);
         }

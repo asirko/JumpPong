@@ -24,10 +24,9 @@ export class TokenInterceptorService implements HttpInterceptor {
     }
 
     return next.handle(request).pipe(
-      tap(console.log),
       tap(event => this.extractToken(event)),
       catchError(err => this.handleErrors(err))
-    ).pipe(tap(console.log));
+    ) ;
   }
 
   extractToken(event: HttpEvent<{ data: any, token: string }>): void {
@@ -42,10 +41,8 @@ export class TokenInterceptorService implements HttpInterceptor {
 
   handleErrors(err: HttpErrorResponse) {
     if (err.status === 401) {
-      console.log(err);
       this.router.navigate(['/users', 'sign-in']);
-      console.log('ici');
-      return of(null);
+      return of(new HttpResponse({body: null, status: 200}));
     }
     return ErrorObservable.create(err);
   }
