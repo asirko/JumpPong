@@ -1,5 +1,5 @@
-const userStorage = require('./user.mock');
-const auth = require('../../auth.middleware');
+const userStorage = require('../../data/user.mock');
+const auth = require('../auth.middleware');
 
 exports.getUser = function(req, res) {
   console.log('get User: ', req.body.login);

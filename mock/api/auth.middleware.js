@@ -7,13 +7,14 @@ exports.middleware = middleware;
 
 function middleware (req, res, next) {
 
+  // check authorization to come in
   // make sure user is allowed to that route (white listed)
-  const isAuthorizationValid = authorizationIsValid(req.header('authorization'));
-  if (!isWhiteList(req) && !isAuthorizationValid) {
+  if (!isWhiteList(req) && !authorizationIsValid(req.header('authorization'))) {
     res.status(401).send();
     return;
   }
 
+  // overload method send to get out
   const simpleSend = res.send;
   res.send = function (json) {
     if (authorizationIsValid(req.header('authorization') && res.statusCode < 400)) {
@@ -23,6 +24,8 @@ function middleware (req, res, next) {
 
     simpleSend.apply(res, [json]);
   };
+
+  // allow to continue in the app
   next();
 }
 
@@ -56,7 +59,6 @@ function isWhiteList (req) {
     .map(([method, url]) => req.method === method && req.url === url)
     .reduce((hasOneTrue, currentBoolean) => hasOneTrue || currentBoolean, false);
 }
-
 
 function getUserId(req) {
   const authorization = req.header('authorization');
