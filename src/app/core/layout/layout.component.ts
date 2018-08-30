@@ -17,7 +17,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   socket: SocketIOClient.Socket;
 
   constructor(private userService: UserService) {
-    this.socket = io('/', { path: '/socket' });
+    this.socket = io('/'/*, { path: '/socket' }*/);
     console.log(this.socket);
   }
 

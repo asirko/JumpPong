@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { catchError, filter, share, tap } from 'rxjs/operators';
+import { filter, share, tap } from 'rxjs/operators';
 import { LOCAL_TOKEN } from '../../shared/token-interceptor.service';
 import { Router } from '@angular/router';
 
